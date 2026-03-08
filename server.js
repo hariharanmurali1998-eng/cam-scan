@@ -7,9 +7,11 @@ const fs = require("fs");
 const readline = require("readline");
 const { google } = require("googleapis");
 const vision = require('@google-cloud/vision');
+require('dotenv').config();
 
 const client = new vision.ImageAnnotatorClient({
-  keyFilename: "./config/credentials.json"
+  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS 
+  
 });
 
 const app = express();
@@ -20,10 +22,10 @@ app.use(express.urlencoded({ extended: true }));
 const upload = multer({ dest: "uploads/" });
 
 const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
-const TOKEN_PATH = "token.json";
+const TOKEN_PATH = process.env.GOOGLE_APPLICATION_CREDENTIALS_TOKEN;
 
 async function authorize() {
-  const credentials = JSON.parse(fs.readFileSync("credentialsOath.json"));
+  const credentials = JSON.parse(fs.readFileSync(process.env.GOOGLE_APPLICATION_CREDENTIALS_OATH));
   const { client_secret, client_id, redirect_uris } = credentials.web;
   const oAuth2Client = new google.auth.OAuth2(
     client_id,
@@ -151,7 +153,7 @@ let result = {};
 app.get("/oauth2callback", async (req, res) => {
   try {
     const code = req.query.code;
-    const credentials = JSON.parse(fs.readFileSync("credentialsOath.json"));
+    const credentials = JSON.parse(fs.readFileSync(process.env.GOOGLE_APPLICATION_CREDENTIALS_OATH));
     const { client_secret, client_id, redirect_uris } = credentials.web;
     const oAuth2Client = new google.auth.OAuth2(
       client_id,
