@@ -32,7 +32,7 @@ async function authorize() {
     client_secret,
     redirect_uris[0]
   );
-  if (fs.existsSync(TOKEN_PATH)) {
+  if (TOKEN_PATH) {
     const token = JSON.parse(TOKEN_PATH);
     oAuth2Client.setCredentials(token);
     return oAuth2Client;
@@ -55,7 +55,7 @@ async function authorize() {
       try {
         const { tokens } = await oAuth2Client.getToken(code);
         oAuth2Client.setCredentials(tokens);
-        fs.writeFileSync(TOKEN_PATH, JSON.stringify(tokens));
+        // fs.writeFileSync(TOKEN_PATH, JSON.stringify(tokens));
         console.log("Token stored to token.json");
         resolve(oAuth2Client);
       } catch (err) {
@@ -162,7 +162,7 @@ app.get("/oauth2callback", async (req, res) => {
     );
     const { tokens } = await oAuth2Client.getToken(code);
     oAuth2Client.setCredentials(tokens);
-    fs.writeFileSync("token.json", JSON.stringify(tokens));
+    // fs.writeFileSync("token.json", JSON.stringify(tokens));
     res.send("Authentication successful. You can close this tab.");
   } catch (err) {
     console.error(err);
