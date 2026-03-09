@@ -25,7 +25,7 @@ const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
 const TOKEN_PATH = process.env.GOOGLE_APPLICATION_CREDENTIALS_TOKEN;
 
 async function authorize() {
-  const credentials = JSON.parse(fs.readFileSync(process.env.GOOGLE_APPLICATION_CREDENTIALS_OATH));
+  const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_OATH);
   const { client_secret, client_id, redirect_uris } = credentials.web;
   const oAuth2Client = new google.auth.OAuth2(
     client_id,
@@ -33,7 +33,7 @@ async function authorize() {
     redirect_uris[0]
   );
   if (fs.existsSync(TOKEN_PATH)) {
-    const token = JSON.parse(fs.readFileSync(TOKEN_PATH));
+    const token = JSON.parse(TOKEN_PATH);
     oAuth2Client.setCredentials(token);
     return oAuth2Client;
   }
@@ -153,7 +153,7 @@ let result = {};
 app.get("/oauth2callback", async (req, res) => {
   try {
     const code = req.query.code;
-    const credentials = JSON.parse(fs.readFileSync(process.env.GOOGLE_APPLICATION_CREDENTIALS_OATH));
+    const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_OATH);
     const { client_secret, client_id, redirect_uris } = credentials.web;
     const oAuth2Client = new google.auth.OAuth2(
       client_id,
